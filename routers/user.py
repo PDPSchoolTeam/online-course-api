@@ -18,7 +18,7 @@ auth_router = APIRouter(
 )
 
 
-@auth_router.get("/user", status_code=status.HTTP_200_OK)
+@auth_router.get("/me", status_code=status.HTTP_200_OK)
 async def get_authenticated_user(
         current_user: CurrentUserDep
 ):
@@ -30,7 +30,7 @@ async def get_authenticated_user(
     return {"foydalanuvchi": current_user}  # noqa
 
 
-@auth_router.post("/", status_code=status.HTTP_201_CREATED)
+@auth_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(
         db: DBSessionDep,
         create_user_request: CreateUserFrom
@@ -41,18 +41,20 @@ async def register_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Bu foydalanuvchi nomi allaqachon mavjud"  # noqa
         )
-
     new_user = User(
+        full_name=create_user_request.full_name,
+        email=create_user_request.email,
         username=create_user_request.username,
         password=bcrypt_context.hash(create_user_request.password)
     )
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return {"xabar": "Foydalanuvchi muvaffaqiyatli yaratildi", "foydalanuvchi_id": new_user.id}  # noqa
 
 
-@auth_router.post("/token", response_model=Token)
+@auth_router.post("/login", response_model=Token)
 async def login_for_access_token(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         db: DBSessionDep
