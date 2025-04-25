@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 from models.course import Course
-from core.dependencies import get_db
+from core.dependencies import DBSessionDep
 
 course_router = APIRouter(
     prefix="/course",
@@ -10,7 +9,6 @@ course_router = APIRouter(
 
 
 @course_router.get("/")
-async def get_all_courses(db: Session = Depends(get_db)):
+async def get_all_courses(db: DBSessionDep):
     data = db.query(Course).all()
     return {"courses": data}
-
