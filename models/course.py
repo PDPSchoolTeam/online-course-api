@@ -15,7 +15,7 @@ class Course(BaseModel):
 
 
 class Lesson(BaseModel):
-    __tablenmae__ = "lesson"
+    __tablename__ = "lesson"
     course_id: Mapped[int] = mapped_column(ForeignKey("course.id"))
     title: Mapped[str] = mapped_column(String(255), nullable=True)
     video_url: Mapped[str] = mapped_column(String(255), nullable=True, unique=True)
