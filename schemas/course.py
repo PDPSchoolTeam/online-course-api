@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 
 
-class Course(BaseModel):
-    id: int
+class CourseCreate(BaseModel):
     title: str
     description: str
     author_id: int  # FK to User
-
