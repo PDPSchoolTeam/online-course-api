@@ -1,7 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from models.course import Course
 from core.dependencies import DBSessionDep, CurrentUserDep
-from schemas.course import CourseCreate
+from schemas.course import CourseCreate, CourseOut
 
 course_router = APIRouter(
     prefix="/course",
@@ -15,7 +15,7 @@ async def get_all_courses(db: DBSessionDep):
     return {"courses": data}
 
 
-@course_router.post("/")
+@course_router.post("/", response_model=CourseOut, status_code=status.HTTP_201_CREATED)
 async def create_course(db: DBSessionDep, course: CourseCreate):
     new_course = Course(
         title=course.title,
@@ -24,4 +24,5 @@ async def create_course(db: DBSessionDep, course: CourseCreate):
     )
     db.add(new_course)
     db.commit()
-    return {"message": "True"}
+    db.refresh(new_course)
+    return new_course
