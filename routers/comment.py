@@ -40,7 +40,7 @@ async def create_comment(
     if not db.query(Lesson).filter(Lesson.id == comment.lesson_id).first():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lesson with id {comment.lesson_id} not found"
+            detail=f"{comment.lesson_id} id li dars topilmadi"  # noqa
         )
 
     new_comment = Comment(
@@ -72,7 +72,7 @@ async def update_comment(
     if not db_comment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comment not found or you don't have permission to edit it"
+            detail="Izoh topilmadi yoki sizga uni tahrirlash uchun ruxsat berilmagan"  # noqa
         )
 
     db_comment.text = comment.text
@@ -97,7 +97,7 @@ async def delete_comment(
     if not db_comment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Comment not found or you don't have permission to delete it"
+            detail="Izoh topilmadi yoki sizga uni o'chirish uchun ruxsat berilmagan"  # noqa
         )
 
     db.delete(db_comment)
